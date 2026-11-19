@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#10182d">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://formspree.io; base-uri 'none'; form-action 'none'">
+<title>Para Mili</title>
+<style>
+:root{color-scheme:light;--ink:#10182d;--night:#0b1020;--paper:#f5ebdd;--gold:#c9aa72;--gold-ink:#664b22;--muted:#59544f;--line:#d6c6b1;font-family:system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 49% 8%,#253553,transparent 58%),var(--night);color:var(--ink);padding:clamp(1rem,5vw,3rem) 1rem 4rem}
+.layout{max-width:48rem;margin:auto}
+header{text-align:center;color:var(--paper);margin-bottom:1.7rem}
+.seal{margin:0 auto 1rem;width:3rem;height:3rem;display:grid;place-items:center;color:var(--gold);border:1px solid #c9aa7288;border-radius:50%;font:1.5rem Georgia,serif;box-shadow:0 0 0 .25rem #c9aa7218}
+header p{margin:0;font:1rem Georgia,serif;letter-spacing:.24em}
+.progress[hidden]{display:none}
+.progress{display:flex;justify-content:center;gap:.55rem;margin-top:.9rem}
+.progress i{width:1.7rem;height:2px;background:#f5ebdd55}
+.progress .active{background:var(--paper)}
+main{background:var(--paper);padding:clamp(1.25rem,6vw,4rem);border-radius:.3rem;box-shadow:0 1.8rem 5rem #050914aa;border:1px solid #ebdbc3;border-top:3px solid #cfbea4}
+.kicker{font-size:.85rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 .75rem}
+h1,h2{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:1.1;margin:0 0 1.2rem;text-wrap:balance}
+h1{font-size:clamp(2.1rem,7vw,3.6rem)}h2{font-size:clamp(1.55rem,5vw,2.35rem)}
+p{font-size:1rem;line-height:1.68;margin:0 0 1rem;white-space:pre-line}
+p strong{font-weight:700}
+.block{margin-top:1.75rem;padding-top:1.55rem;border-top:1px solid var(--line)}
+.block h2:focus,h1:focus{outline:none}
+blockquote{margin:0 0 1.5rem;padding:.9rem 1rem;background:#fffbf47a;border-left:2px solid #8c7e6e}
+blockquote p{font-family:Georgia,serif;font-size:1.12rem;margin-bottom:0}
+.ornament{height:1px;background:var(--line);margin:1.15rem 0 1.75rem;width:4rem}
+button,input,select,a.action{font:inherit}
+button,a.action{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--ink);border-radius:3px;background:var(--ink);color:#fff5e7;font-size:.86rem;font-weight:650;letter-spacing:.07em;padding:.75rem 1.1rem;min-height:2.8rem;cursor:pointer;text-decoration:none}
+button:hover,a.action:hover{background:#253553}button:disabled{opacity:.55;cursor:default}
+.secondary{background:transparent;color:var(--ink)}.secondary:hover{background:#e8dcca;color:var(--ink)}
+:focus-visible{outline:2px solid #886629;outline-offset:3px}
+.hint{border:1px solid var(--gold);color:var(--gold-ink);padding:.7rem .9rem;border-radius:2px;background:#fff6e8;margin-bottom:.7rem}
+label{display:block;font-size:.94rem}
+input:not([type=radio]),select{display:block;width:100%;min-height:2.8rem;margin-top:.4rem;padding:.6rem .7rem;border:1px solid #8b8174;border-radius:3px;background:#fffaf3;color:var(--ink)}
+.input-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin-bottom:1rem}
+.input-row input{text-align:center}
+.choice{display:flex;align-items:center;gap:.7rem;background:#fffbf5;border:1px solid #a99a86;border-radius:3px;margin:.55rem 0;padding:.8rem;line-height:1.45;cursor:pointer}
+.choice:has(:checked){background:#e3e8ee;border-color:var(--ink)}
+.choice input{margin:0;accent-color:var(--ink)}
+form button{margin-top:1rem}
+.feedback{font-weight:650;color:#74282b;margin:.8rem 0 0}
+.feedback:empty{display:none}
+.success{color:#28533d}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
+.small{font-size:.88rem;color:var(--muted)}
+.enter{animation:arrive .45s ease both}
+@keyframes arrive{from{opacity:0;transform:translateY(.45rem)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <header>
+    <div class="seal" aria-hidden="true">✧</div>
+    <p>PARA MILI</p>
+    <div class="progress" id="progress" hidden></div>
+  </header>
+  <main id="page">
+    <h1>Invitación privada</h1>
+    <p id="entry-status">Abre el enlace completo que recibiste para leerla.</p>
+    <noscript><p>Activa JavaScript para abrir la invitación.</p></noscript>
+  </main>
+</div>
+<script>
+"use strict";
+
+const encrypted = "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";
+const page = document.querySelector("#page");
+const progress = document.querySelector("#progress");
+const masthead = document.querySelector("header p");
+const parameters = new URLSearchParams(location.hash.slice(1));
+const formId = parameters.get("form") || "";
+const phone = parameters.get("wa") || "";
+const emailEnabled = /^[a-z0-9]{5,24}$/i.test(formId);
+const whatsappEnabled = /^[1-9][0-9]{6,14}$/.test(phone);
+const storageKey = "para-mili:" + encrypted.slice(0, 24);
+const choices = [];
+let copy;
+
+function element(tag, value = "", className = "") {
+  const node = document.createElement(tag);
+  node.textContent = value;
+  if (className) node.className = className;
+  return node;
+}
+
+function action(label, handler) {
+  const button = element("button", label);
+  button.type = "button";
+  button.addEventListener("click", handler);
+  return button;
+}
+
+function submitButton(label) {
+  const button = element("button", label);
+  button.type = "submit";
+  return button;
+}
+
+function heading(container, level, title) {
+  const node = element(level, title);
+  node.tabIndex = -1;
+  container.append(node);
+  return node;
+}
+
+function paragraph(text) {
+  const paragraph = element("p", text);
+  const emphasis = ["ES UNA LOCURA", "ME GUSTARÍA", "domingo 29 de noviembre"].find(word => text.includes(word));
+  if (emphasis) {
+    const index = text.indexOf(emphasis);
+    paragraph.replaceChildren(text.slice(0, index), element("strong", emphasis), text.slice(index + emphasis.length));
+  }
+  return paragraph;
+}
+
+function focusSection(node) {
+  node.focus();
+  node.scrollIntoView({ block: "start" });
+}
+
+function startScreen(title, step, caption) {
+  masthead.hidden = step === 0;
+  progress.hidden = false;
+  progress.replaceChildren(...Array.from({ length: 4 }, (_, index) => element("i", "", index === step ? "active" : "")));
+  progress.setAttribute("aria-label", caption || "Introducción");
+  page.replaceChildren();
+  page.classList.remove("enter");
+  requestAnimationFrame(() => page.classList.add("enter"));
+  if (caption) page.append(element("p", caption, "kicker"));
+  const titleNode = heading(page, "h1", title);
+  page.append(element("div", "", "ornament"));
+  return titleNode;
+}
+
+function section() {
+  const block = element("section", "", "block enter");
+  page.append(block);
+  return block;
+}
+
+function status() {
+  const message = element("p", "", "feedback");
+  message.setAttribute("role", "status");
+  return message;
+}
+
+function showIntro() {
+  startScreen(copy.title, 0, "Introducción");
+  page.append(...copy.intro.map(paragraph));
+  const next = action("CONTINUAR", () => {
+    next.remove();
+    showPuzzle(0);
+  });
+  page.append(next);
+}
+
+function showLetter(index) {
+  const letter = copy.letters[index];
+  const title = startScreen(letter.title, index + 1, "Carta " + (index + 1) + " de 3");
+  if (letter.poem) {
+    const poem = element("blockquote");
+    poem.append(element("p", letter.poemHeading, "kicker"), paragraph(letter.poem));
+    page.append(poem);
+  }
+  page.append(...letter.body.map(paragraph));
+  if (index === 0) {
+    const next = action("CONTINUAR", () => {
+      next.remove();
+      showQuestion(index);
+    });
+    page.append(next);
+  } else {
+    showQuestion(index, false);
+  }
+  focusSection(title);
+}
+
+function showQuestion(index, moveFocus = true) {
+  const block = section();
+  const letter = copy.letters[index];
+  const title = heading(block, "h2", letter.question);
+  const form = element("form");
+  for (const [position, labelText] of letter.choices.entries()) {
+    const label = element("label", "", "choice");
+    const input = element("input");
+    input.type = "radio";
+    input.name = "choice";
+    input.value = String(position);
+    input.required = true;
+    label.append(input, document.createTextNode(labelText));
+    form.append(label);
+  }
+  form.append(submitButton(index === 0 ? "CONTINUAR" : "SIGUIENTE"));
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const selected = new FormData(form).get("choice");
+    if (selected === null) return;
+    choices[index] = letter.choices[Number(selected)];
+    form.remove();
+    block.append(element("p", choices[index], "small"));
+    if (index === 2) showFinal();
+    else showPuzzle(index + 1);
+  });
+  block.append(form);
+  if (moveFocus) focusSection(title);
+}
+
+function labelledInput(labelText, name) {
+  const label = element("label", labelText);
+  const input = element("input");
+  input.name = name;
+  input.required = true;
+  label.append(input);
+  return { label, input };
+}
+
+function populate(select, options) {
+  select.replaceChildren(new Option("Elegir", ""), ...options.map(([label, value]) => new Option(label, value)));
+}
+
+function dateInput() {
+  const row = element("div", "", "input-row");
+  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const fields = ["Día", "Mes", "Año"].map(name => {
+    const label = element("label", name);
+    const select = element("select");
+    select.required = true;
+    label.append(select);
+    row.append(label);
+    return select;
+  });
+  const [day, month, year] = fields;
+  populate(month, months.map((name, index) => [name, String(index + 1)]));
+  populate(year, Array.from({ length: 17 }, (_, index) => [2030 - index, 2030 - index]));
+  const updateDays = () => {
+    const selected = day.value;
+    const count = month.value ? new Date(Number(year.value || 2024), Number(month.value), 0).getDate() : 31;
+    populate(day, Array.from({ length: count }, (_, index) => [index + 1, index + 1]));
+    day.value = Number(selected) <= count ? selected : "";
+  };
+  month.addEventListener("change", updateDays);
+  year.addEventListener("change", updateDays);
+  updateDays();
+  return { node: row, value: () => fields.map(field => field.value).join("/") };
+}
+
+function codeInput() {
+  const row = element("div", "", "input-row");
+  const inputs = [1, 2, 3].map(number => {
+    const field = labelledInput("Dígito " + number, "digit-" + number);
+    field.input.type = "text";
+    field.input.inputMode = "numeric";
+    field.input.maxLength = 1;
+    field.input.pattern = "[0-9]";
+    row.append(field.label);
+    return field.input;
+  });
+  inputs.forEach((input, index) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/[^0-9]/g, "");
+      if (input.value) inputs[index + 1]?.focus();
+    });
+    input.addEventListener("paste", event => {
+      const pasted = event.clipboardData?.getData("text").trim();
+      if (!/^[0-9]{3}$/.test(pasted || "")) return;
+      event.preventDefault();
+      inputs.forEach((field, position) => { field.value = pasted[position]; });
+      inputs[2].focus();
+    });
+  });
+  return { node: row, value: () => inputs.map(input => input.value).join("") };
+}
+
+function answerInput(index) {
+  if (index === 1) return dateInput();
+  if (index === 2) return codeInput();
+  const { label, input } = labelledInput("Tu respuesta", "name");
+  input.autocomplete = "off";
+  return {
+    node: label,
+    value: () => input.value.normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("es")
+  };
+}
+
+function showPuzzle(index) {
+  const puzzle = copy.puzzles[index];
+  const block = section();
+  if (puzzle.body) block.append(...puzzle.body.map(paragraph));
+  const title = heading(block, "h2", puzzle.title);
+  for (const [position, hint] of puzzle.hints.entries()) {
+    block.append(element("p", index === 2 ? (position + 1) + ". " + hint : hint, "hint"));
+  }
+  const form = element("form");
+  const answer = answerInput(index);
+  const message = status();
+  form.append(answer.node, submitButton(index === 2 ? "PROBAR CÓDIGO" : "VERIFICAR"), message);
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    if (answer.value() !== puzzle.answer) {
+      message.textContent = puzzle.failure;
+      return;
+    }
+    form.remove();
+    const success = element("p", puzzle.success, "success");
+    success.setAttribute("role", "status");
+    block.append(success, action("ABRIR CARTA " + (index + 1), () => showLetter(index)));
+    block.lastElementChild.focus();
+  });
+  block.append(form);
+  focusSection(title);
+}
+
+function showFinal() {
+  const title = startScreen("La invitación", 3, "Carta 3 de 3");
+  page.append(...copy.final.map(paragraph));
+  const block = section();
+  heading(block, "h2", "¿Te animas a tener una cita conmigo?");
+  if (emailEnabled) block.append(element("p", "Tu respuesta y las tres elecciones se enviarán por correo.", "small"));
+  const actions = element("div", "", "actions");
+  const yes = action("SÍ, VAMOS", () => confirm("Sí, vamos", block, actions));
+  const no = action("NO, GRACIAS", () => confirm("No, gracias", block, actions));
+  no.className = "secondary";
+  actions.append(yes, no);
+  block.append(actions);
+  focusSection(title);
+}
+
+function saveLocal(response) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(response));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function sendEmail(response) {
+  const result = await fetch("https://formspree.io/f/" + formId, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: new URLSearchParams(response),
+    signal: AbortSignal.timeout(12000)
+  });
+  if (!result.ok) throw new Error("No se pudo enviar la respuesta");
+}
+
+async function confirm(decision, block, actions) {
+  const response = {
+    respuesta: decision,
+    color: choices[0],
+    lugar: choices[1],
+    actividad: choices[2]
+  };
+  const accepted = decision === "Sí, vamos";
+  actions.replaceChildren();
+  const message = status();
+  block.append(message);
+  const saved = saveLocal(response);
+  if (emailEnabled) {
+    message.textContent = "Enviando tu respuesta…";
+    try {
+      await sendEmail(response);
+      message.classList.add("success");
+      message.textContent = "Respuesta enviada.";
+    } catch {
+      message.textContent = saved ? "Tu respuesta quedó guardada en este dispositivo. El correo sigue pendiente." : "El correo no se pudo enviar. Puedes volver a intentarlo.";
+      actions.append(action("REINTENTAR CORREO", () => {
+        message.remove();
+        block.querySelector(".decision-result")?.remove();
+        confirm(decision, block, actions);
+      }));
+    }
+  } else {
+    message.textContent = saved ? "Respuesta guardada en este dispositivo. El correo aún no está configurado." : "El correo aún no está configurado y no se pudo guardar la respuesta en este dispositivo.";
+  }
+
+  if (!accepted) {
+    block.append(element("p", copy.no, "decision-result"));
+    return;
+  }
+  if (!whatsappEnabled) {
+    block.append(element("p", "El contacto de WhatsApp aún no está configurado.", "small decision-result"));
+    return;
+  }
+  const link = element("a", "ABRIR WHATSAPP", "action");
+  link.href = "https://wa.me/" + phone + "?text=" + encodeURIComponent(copy.whatsapp);
+  actions.append(link);
+  if (!emailEnabled || message.classList.contains("success")) location.assign(link.href);
+}
+
+function decode(value) {
+  return Uint8Array.from(atob(value.replace(/-/g, "+").replace(/_/g, "/")), letter => letter.charCodeAt(0));
+}
+
+async function openInvitation() {
+  const keyValue = parameters.get("k") || "";
+  if (!/^[A-Za-z0-9_-]{43}$/.test(keyValue)) return;
+  try {
+    const payload = decode(encrypted);
+    const key = await crypto.subtle.importKey("raw", decode(keyValue), "AES-GCM", false, ["decrypt"]);
+    const clear = await crypto.subtle.decrypt({ name: "AES-GCM", iv: payload.slice(0, 12) }, key, payload.slice(12));
+    copy = JSON.parse(new TextDecoder().decode(clear));
+    showIntro();
+  } catch {
+    document.querySelector("#entry-status").textContent = "El enlace no pudo abrir la invitación. Comprueba que lo copiaste completo y ábrelo en una página HTTPS.";
+  }
+}
+openInvitation();
+</script>
+</body>
+</html>
